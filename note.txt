@@ -1,0 +1,86 @@
+package com.get.demo.service;
+
+import org.apache.camel.CamelContext;
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.spring.boot.CamelContextConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Service;
+
+@Service
+public class TallyService {
+
+    @Value("${tally.baseUrl}")
+    private String tallyBaseUrl;
+
+    @Value("${tally.pollingInterval}")
+    private long pollingInterval; // Use long for the polling interval to represent time in milliseconds
+
+    @Autowired
+    private CamelContext camelContext; // CamelContext injected
+
+    // Method to fetch the list of companies from Tally
+    public void fetchCompanies() {
+        // This will be called manually if you want to initiate fetching
+        System.out.println("Fetching companies manually..."); // Debug message
+    }
+
+    // Define the Camel route for polling TallyPrime
+    @Bean
+    public RouteBuilder tallyRoute() {
+        return new RouteBuilder() {
+            @Override
+            public void configure() throws Exception {
+                // Timer route to poll every interval set in application.properties
+                from("timer:tally?period=" + pollingInterval)
+                        .setHeader("Content-Type", constant("application/xml"))
+                        .setBody(constant(getXmlRequest())) // Static XML request to Tally
+                        .to("http://" + tallyBaseUrl + "/Tally") // Poll TallyPrime service
+                        .process(exchange -> {
+                            String response = exchange.getIn().getBody(String.class);
+                            parseCompanies(response); // Parse and handle the response
+                        });
+            }
+        };
+    }
+
+    // Generate the XML request body to send to TallyPrime
+    private String getXmlRequest() {
+        return "<ENVELOPE>" +
+                "<HEADER>" +
+                "<VERSION>1</VERSION>" +
+                "<TALLYREQUEST>Export</TALLYREQUEST>" +
+                "<TYPE>Collection</TYPE>" +
+                "<ID>List of Companies</ID>" +
+                "</HEADER>" +
+                "<BODY>" +
+                "<DESC>" +
+                "<STATICVARIABLES>" +
+                "<SVIsSimpleCompany>No</SVIsSimpleCompany>" +
+                "</STATICVARIABLES>" +
+                "<TDL>" +
+                "<TDLMESSAGE>" +
+                "<COLLECTION ISMODIFY=\"No\" ISFIXED=\"No\" ISINITIALIZE=\"Yes\" ISOPTION=\"No\" ISINTERNAL=\"No\" NAME=\"List of Companies\">" +
+                "<TYPE>Company</TYPE>" +
+                "<NATIVEMETHOD>Name</NATIVEMETHOD>" +
+                "</COLLECTION>" +
+                "<ExportHeader>EmpId:5989</ExportHeader>" +
+                "</TDLMESSAGE>" +
+                "</TDL>" +
+                "</DESC>" +
+                "</BODY>" +
+                "</ENVELOPE>";
+    }
+
+    // Method to parse the response from TallyPrime
+    private void parseCompanies(String xmlResponse) {
+        // You can parse XML response and extract company data here.
+        // For now, we'll just log the raw response.
+        System.out.println("Parsing companies from Tally response...");
+        System.out.println("Response from Tally: " + xmlResponse);
+
+        // Example: You could use an XML parsing library like JAXB or Jackson XML to extract company names
+        // If the response is in XML, you could add logic to parse it here and extract the list of companies
+    }
+}
