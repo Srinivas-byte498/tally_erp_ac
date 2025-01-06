@@ -1,4 +1,4 @@
-package com.get.demo.service;
+package com.get.erpintegration.service;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
