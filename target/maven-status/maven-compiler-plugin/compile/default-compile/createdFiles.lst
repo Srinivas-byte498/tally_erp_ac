@@ -1,0 +1,13 @@
+com\get\erpintegration\service\TallyService.class
+com\get\erpintegration\CamelContextStarter.class
+com\get\erpintegration\ERPIntegrationApplication.class
+com\get\erpintegration\service\UpdateTallyService.class
+com\get\erpintegration\model\Company.class
+com\get\erpintegration\repository\LedgerRepository.class
+com\get\erpintegration\config\CamelConfig.class
+com\get\erpintegration\repository\CompanyRepository.class
+com\get\erpintegration\routes\CamelRouteConfig.class
+com\get\erpintegration\model\Ledger.class
+com\get\erpintegration\config\CamelConfig$1.class
+com\get\erpintegration\controller\TallyController.class
+com\get\erpintegration\service\TallyService$1.class

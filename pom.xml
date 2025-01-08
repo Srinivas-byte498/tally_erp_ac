@@ -11,9 +11,9 @@
     </parent>
 
     <groupId>com.get</groupId>
-    <artifactId>demo</artifactId>
+    <artifactId>myfinalysterpint</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
+    <name>erpintegration</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
